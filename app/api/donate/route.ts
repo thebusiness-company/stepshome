@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { donationSchema, formatZodErrors } from '@/lib/schemas';
 import { checkFormLimit, getClientIP } from '@/lib/rate-limit';
-import type { Donation } from '@prisma/client';
 
-/** Public — rate-limited, Zod-validated */
+/**
+ * POST /api/donate
+ *
+ * Public donation request endpoint.
+ * - Rate limited
+ * - Zod validated
+ * - Creates a pending donation record
+ */
 export async function POST(request: NextRequest) {
   try {
+    // ---------------------------------------------------------
+    // Rate limiting
+    // ---------------------------------------------------------
     const ip = getClientIP(request);
     const limit = checkFormLimit(ip);
 
@@ -21,23 +30,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ---------------------------------------------------------
+    // Parse request body
+    // ---------------------------------------------------------
     const raw = await request.json();
+
+    // ---------------------------------------------------------
+    // Validate request
+    // ---------------------------------------------------------
     const result = donationSchema.safeParse(raw);
 
     if (!result.success) {
       return NextResponse.json(
-        { error: formatZodErrors(result.error) },
+        {
+          error: formatZodErrors(result.error),
+        },
         { status: 400 }
       );
     }
 
     const body = result.data;
 
+    // ---------------------------------------------------------
+    // Generate donation reference
+    // ---------------------------------------------------------
     const reference = `DON-${Date.now()}-${Math.random()
       .toString(36)
       .substring(2, 8)
       .toUpperCase()}`;
 
+    // ---------------------------------------------------------
+    // Create donation
+    // ---------------------------------------------------------
     const donation = await prisma.donation.create({
       data: {
         amount: body.amount,
@@ -49,6 +73,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // ---------------------------------------------------------
+    // Return response
+    // ---------------------------------------------------------
     return NextResponse.json(
       {
         success: true,
@@ -68,15 +95,30 @@ export async function POST(request: NextRequest) {
     console.error('[Donate API] Error:', error);
 
     return NextResponse.json(
-      { error: 'An unexpected error occurred.' },
+      {
+        error: 'An unexpected error occurred.',
+      },
       { status: 500 }
     );
   }
 }
 
-/** Admin-only — protected by middleware */
+/**
+ * GET /api/donate
+ *
+ * Admin-only endpoint.
+ * Access should be protected by middleware/authentication.
+ *
+ * Returns:
+ * - Latest 100 donations
+ * - Total donation count
+ * - Total donation amount
+ */
 export async function GET() {
   try {
+    // ---------------------------------------------------------
+    // Fetch latest donations
+    // ---------------------------------------------------------
     const donations = await prisma.donation.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -84,6 +126,9 @@ export async function GET() {
       take: 100,
     });
 
+    // ---------------------------------------------------------
+    // Calculate donation totals
+    // ---------------------------------------------------------
     const totals = await prisma.donation.aggregate({
       _sum: {
         amount: true,
@@ -91,11 +136,17 @@ export async function GET() {
       _count: true,
     });
 
-    const formattedDonations = donations.map((donation: Donation) => ({
+    // ---------------------------------------------------------
+    // Convert Prisma Decimal to JSON-safe number
+    // ---------------------------------------------------------
+    const formattedDonations = donations.map((donation) => ({
       ...donation,
       amount: Number(donation.amount),
     }));
 
+    // ---------------------------------------------------------
+    // Return response
+    // ---------------------------------------------------------
     return NextResponse.json({
       success: true,
       data: formattedDonations,
@@ -108,7 +159,9 @@ export async function GET() {
     console.error('[Donate API] GET Error:', error);
 
     return NextResponse.json(
-      { error: 'Failed to fetch donations.' },
+      {
+        error: 'Failed to fetch donations.',
+      },
       { status: 500 }
     );
   }
