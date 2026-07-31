@@ -1,20 +1,76 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Steps Home (`steps-home`)
 
-# Run and deploy your AI Studio app
+A modern Next.js web application for **Steps Home**, designed to provide seamless experiences with dynamic UI components, database integration, and payment services.
 
-This contains everything you need to run your app locally.
+## 🚀 Features
 
-View your app in AI Studio: https://ai.studio/apps/0c8d30f7-4735-4702-bf91-58d640fad3f9
+- **Framework**: Built with Next.js 15 (App Router) and React 19.
+- **Styling**: Tailwind CSS v4 for utility-first responsive styling.
+- **UI & Animations**: Lucide icons, dynamic UI components, and smooth transitions powered by Framer Motion.
+- **Database & ORM**: Prisma ORM with Neon serverless Postgres adapter.
+- **Payments Integration**: Razorpay integration.
+- **Type Safety**: Full TypeScript support with Zod validation.
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## 🛠️ Tech Stack
 
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS v4, Motion
+- **Backend & Database**: Next.js Server Actions/API Routes, Prisma ORM, Neon Postgres
+- **Integrations**: Razorpay
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+Ensure you have Node.js (v18+) installed or Bun package manager.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/thebusiness-company/stepshome.git
+cd stepshome
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+bun install
+```
+
+### 3. Environment Variables
+
+Create a `.env.local` file in the root directory and configure your environment variables based on `.env.example`:
+
+```env
+DATABASE_URL=
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+```
+
+### 4. Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+---
+
+## 📜 Available Scripts
+
+- `npm run dev` - Starts the development server (`0.0.0.0:3000`).
+- `npm run build` - Builds the application for production.
+- `npm run start` - Starts the production server.
+- `npm run lint` - Runs Next.js linter check.
+
+---
+
+## 📄 License
+
+Private - All rights reserved.
