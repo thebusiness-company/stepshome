@@ -92,8 +92,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#b5b5b5]">
           <div className="max-w-xl text-center md:text-left leading-relaxed">
             <p>
-              Steps Home is registered under [REGISTRATION DETAILS — to be provided]. 
-              80G certified under the Income Tax Act, 1961.
+              Steps Home holds 80G certification under the Income Tax Act, 1961. Donations made to Steps Home are eligible for a tax deduction under Section 80G.
             </p>
           </div>
           <p className="shrink-0">
