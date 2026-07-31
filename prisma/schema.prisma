@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Volunteer / Contact Form Submissions ───────────────────────
+
+model Contact {
+  id        String        @id @default(cuid())
+  firstName String        @map("first_name") @db.VarChar(100)
+  lastName  String        @map("last_name") @db.VarChar(100)
+  email     String        @db.VarChar(254)
+  phone     String?       @db.VarChar(20)
+  helpType  String        @map("help_type") @db.VarChar(50)
+  message   String?       @db.Text
+  status    ContactStatus @default(PENDING)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@map("contacts")
+}
+
+enum ContactStatus {
+  PENDING
+  REVIEWED
+  CONTACTED
+  COMPLETED
+}
+
+// ─── Donations ──────────────────────────────────────────────────
+
+model Donation {
+  id              String            @id @default(cuid())
+  amount          Decimal           @db.Decimal(10, 2)
+  currency        String            @default("INR") @db.VarChar(3)
+  frequency       DonationFrequency
+  designation     String            @db.VarChar(100)
+  reference       String            @unique @db.VarChar(30)
+  razorpayOrderId String?           @unique @map("razorpay_order_id")
+  donorName       String?           @map("donor_name") @db.VarChar(200)
+  donorEmail      String?           @map("donor_email") @db.VarChar(254)
+  donorPhone      String?           @map("donor_phone") @db.VarChar(20)
+  status          DonationStatus    @default(PENDING)
+  paymentId       String?           @map("payment_id")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([donorEmail])
+  @@map("donations")
+}
+
+enum DonationFrequency {
+  MONTHLY
+  ONE_TIME
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// ─── Newsletter Subscribers ─────────────────────────────────────
+
+model Newsletter {
+  id           String   @id @default(cuid())
+  email        String   @unique @db.VarChar(254)
+  name         String?  @db.VarChar(100)
+  isActive     Boolean  @default(true) @map("is_active")
+  subscribedAt DateTime @default(now()) @map("subscribed_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@map("newsletters")
+}
+
+// ─── Gallery Images ─────────────────────────────────────────────
+
+model GalleryImage {
+  id        String          @id @default(cuid())
+  title     String          @db.VarChar(200)
+  alt       String          @db.VarChar(300)
+  url       String          @db.VarChar(2000)
+  category  GalleryCategory @default(MEMORIES)
+  sortOrder Int             @default(0) @map("sort_order")
+  isActive  Boolean         @default(true) @map("is_active")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@index([category, sortOrder])
+  @@index([isActive])
+  @@map("gallery_images")
+}
+
+enum GalleryCategory {
+  MEMORIES
+  EVENTS
+  DAILY_LIFE
+}
+
+// ─── Girl Profiles ──────────────────────────────────────────────
+model Girl {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  age         Int
+  description String   @db.Text
+  img         String   @db.VarChar(2000)
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([sortOrder])
+  @@map("girls")
+}
