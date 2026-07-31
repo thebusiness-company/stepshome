@@ -40,11 +40,11 @@ export default function Footer() {
                   About Us
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/girls" className="text-[#e5e5e5] hover:text-white transition-colors">
                   The Girls
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/join" className="text-[#e5e5e5] hover:text-white transition-colors">
                   Get Involved

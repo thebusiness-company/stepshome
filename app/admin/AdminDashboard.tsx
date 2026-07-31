@@ -89,7 +89,7 @@ export default function AdminDashboard() {
 
   const tabs = [
     { id: 'overview' as Tab, label: 'Overview', icon: LayoutDashboard },
-    { id: 'girls' as Tab, label: 'Girls Profiles', icon: Sparkles },
+    // { id: 'girls' as Tab, label: 'Girls Profiles', icon: Sparkles },
     { id: 'gallery' as Tab, label: 'Gallery', icon: ImageIcon },
     { id: 'contacts' as Tab, label: 'Contacts', icon: Users },
     { id: 'donations' as Tab, label: 'Donations', icon: Heart },
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
         {loading && <div className="text-center py-20 text-brand-muted">Loading...</div>}
 
         {!loading && tab === 'overview' && stats && <OverviewTab stats={stats} />}
-        {!loading && tab === 'girls' && <GirlsTab girls={girls} onRefresh={() => fetchData('girls')} modal={girlModal} setModal={setGirlModal} />}
+        {/* {!loading && tab === 'girls' && <GirlsTab girls={girls} onRefresh={() => fetchData('girls')} modal={girlModal} setModal={setGirlModal} />} */}
         {!loading && tab === 'gallery' && <GalleryTab gallery={gallery} onRefresh={() => fetchData('gallery')} modal={modal} setModal={setModal} />}
         {!loading && tab === 'contacts' && <ContactsTab contacts={contacts} onRefresh={() => fetchData('contacts')} />}
         {!loading && tab === 'donations' && <DonationsTab donations={donations} />}
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
 // ─── Overview ───────────────────────────────────────────────────
 function OverviewTab({ stats }: { stats: Stats }) {
   const cards = [
-    { label: 'Girls Profiles', value: stats.totalGirls || 0, icon: Sparkles, color: 'text-brand-primary' },
+    // { label: 'Girls Profiles', value: stats.totalGirls || 0, icon: Sparkles, color: 'text-brand-primary' },
     { label: 'Contacts', value: stats.totalContacts, icon: Users, color: 'text-brand-primary' },
     { label: 'Donations', value: stats.totalDonations, icon: Heart, color: 'text-brand-teal' },
     { label: 'Revenue', value: `₹${stats.totalDonationAmount.toLocaleString()}`, icon: Heart, color: 'text-green-600' },
@@ -501,236 +501,236 @@ function NewsletterTab({ subscribers, onRefresh }: { subscribers: Subscriber[]; 
   );
 }
 
-// ─── Girls Tab ──────────────────────────────────────────────────
-function GirlsTab({ girls, onRefresh, modal, setModal }: { 
-  girls: Girl[]; 
-  onRefresh: () => void; 
-  modal: { type: 'add' | 'edit'; data?: Girl } | null; 
-  setModal: (m: { type: 'add' | 'edit'; data?: Girl } | null) => void 
-}) {
-  const [form, setForm] = useState({ name: '', age: 18, description: '', img: '' });
-  const [uploadMode, setUploadMode] = useState<'file' | 'url'>('file');
-  const [uploading, setUploading] = useState(false);
+// // ─── Girls Tab ──────────────────────────────────────────────────
+// function GirlsTab({ girls, onRefresh, modal, setModal }: { 
+//   girls: Girl[]; 
+//   onRefresh: () => void; 
+//   modal: { type: 'add' | 'edit'; data?: Girl } | null; 
+//   setModal: (m: { type: 'add' | 'edit'; data?: Girl } | null) => void 
+// }) {
+//   const [form, setForm] = useState({ name: '', age: 18, description: '', img: '' });
+//   const [uploadMode, setUploadMode] = useState<'file' | 'url'>('file');
+//   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (modal?.type === 'edit' && modal.data) {
-      setForm({ name: modal.data.name, age: modal.data.age, description: modal.data.description, img: modal.data.img });
-      setUploadMode('url');
-    } else {
-      setForm({ name: '', age: 18, description: '', img: '' });
-      setUploadMode('file');
-    }
-  }, [modal]);
+//   useEffect(() => {
+//     if (modal?.type === 'edit' && modal.data) {
+//       setForm({ name: modal.data.name, age: modal.data.age, description: modal.data.description, img: modal.data.img });
+//       setUploadMode('url');
+//     } else {
+//       setForm({ name: '', age: 18, description: '', img: '' });
+//       setUploadMode('file');
+//     }
+//   }, [modal]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.success) {
-        setForm(prev => ({ ...prev, img: data.url }));
-      } else {
-        alert(data.error || 'Upload failed');
-      }
-    } catch { alert('Upload failed'); }
-    setUploading(false);
-  };
+//   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const file = e.target.files?.[0];
+//     if (!file) return;
+//     setUploading(true);
+//     try {
+//       const formData = new FormData();
+//       formData.append('file', file);
+//       const res = await fetch('/api/upload', { method: 'POST', body: formData });
+//       const data = await res.json();
+//       if (data.success) {
+//         setForm(prev => ({ ...prev, img: data.url }));
+//       } else {
+//         alert(data.error || 'Upload failed');
+//       }
+//     } catch { alert('Upload failed'); }
+//     setUploading(false);
+//   };
 
-  const handleSave = async () => {
-    if (!form.name || !form.img || !form.description) return;
-    const isEdit = modal?.type === 'edit' && modal.data;
-    const url = isEdit ? `/api/girls/${modal.data!.id}` : '/api/girls';
-    const method = isEdit ? 'PUT' : 'POST';
+//   const handleSave = async () => {
+//     if (!form.name || !form.img || !form.description) return;
+//     const isEdit = modal?.type === 'edit' && modal.data;
+//     const url = isEdit ? `/api/girls/${modal.data!.id}` : '/api/girls';
+//     const method = isEdit ? 'PUT' : 'POST';
     
-    const res = await fetch(url, { 
-      method, 
-      headers: { 'Content-Type': 'application/json' }, 
-      body: JSON.stringify({
-        name: form.name,
-        age: Number(form.age),
-        description: form.description,
-        img: form.img
-      }) 
-    });
+//     const res = await fetch(url, { 
+//       method, 
+//       headers: { 'Content-Type': 'application/json' }, 
+//       body: JSON.stringify({
+//         name: form.name,
+//         age: Number(form.age),
+//         description: form.description,
+//         img: form.img
+//       }) 
+//     });
     
-    if (res.ok) {
-      setModal(null);
-      onRefresh();
-    } else {
-      const data = await res.json();
-      alert(data.error || 'Failed to save profile');
-    }
-  };
+//     if (res.ok) {
+//       setModal(null);
+//       onRefresh();
+//     } else {
+//       const data = await res.json();
+//       alert(data.error || 'Failed to save profile');
+//     }
+//   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this girl\'s profile?')) return;
-    const res = await fetch(`/api/girls/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      onRefresh();
-    } else {
-      alert('Failed to delete profile');
-    }
-  };
+//   const handleDelete = async (id: string) => {
+//     if (!confirm('Are you sure you want to delete this girl\'s profile?')) return;
+//     const res = await fetch(`/api/girls/${id}`, { method: 'DELETE' });
+//     if (res.ok) {
+//       onRefresh();
+//     } else {
+//       alert('Failed to delete profile');
+//     }
+//   };
 
-  const handleReorder = async (girl: Girl, direction: 'up' | 'down') => {
-    const currentIndex = girls.findIndex(g => g.id === girl.id);
-    if (direction === 'up' && currentIndex === 0) return;
-    if (direction === 'down' && currentIndex === girls.length - 1) return;
+//   const handleReorder = async (girl: Girl, direction: 'up' | 'down') => {
+//     const currentIndex = girls.findIndex(g => g.id === girl.id);
+//     if (direction === 'up' && currentIndex === 0) return;
+//     if (direction === 'down' && currentIndex === girls.length - 1) return;
 
-    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-    const targetGirl = girls[targetIndex];
+//     const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+//     const targetGirl = girls[targetIndex];
 
-    // Swap sortOrder
-    const currentOrder = girl.sortOrder;
-    const targetOrder = targetGirl.sortOrder;
+//     // Swap sortOrder
+//     const currentOrder = girl.sortOrder;
+//     const targetOrder = targetGirl.sortOrder;
 
-    // Send PUT updates
-    await fetch(`/api/girls/${girl.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sortOrder: targetOrder })
-    });
+//     // Send PUT updates
+//     await fetch(`/api/girls/${girl.id}`, {
+//       method: 'PUT',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ sortOrder: targetOrder })
+//     });
 
-    await fetch(`/api/girls/${targetGirl.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sortOrder: currentOrder })
-    });
+//     await fetch(`/api/girls/${targetGirl.id}`, {
+//       method: 'PUT',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ sortOrder: currentOrder })
+//     });
 
-    onRefresh();
-  };
+//     onRefresh();
+//   };
 
-  return (
-    <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-brand-dark">{girls.length} Girls Profiles</h2>
-        <button onClick={() => setModal({ type: 'add' })} className="flex items-center gap-2 bg-brand-primary text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-brand-primary/90 shadow-btn">
-          <Plus size={16} /> Add Profile
-        </button>
-      </div>
+//   return (
+//     <>
+//       <div className="flex justify-between items-center mb-6">
+//         <h2 className="text-xl font-bold text-brand-dark">{girls.length} Girls Profiles</h2>
+//         <button onClick={() => setModal({ type: 'add' })} className="flex items-center gap-2 bg-brand-primary text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-brand-primary/90 shadow-btn">
+//           <Plus size={16} /> Add Profile
+//         </button>
+//       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {girls.map((g, idx) => (
-          <div key={g.id} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-brand-accent/15 flex flex-col justify-between group">
-            <div>
-              <div className="aspect-square relative w-full bg-brand-bg">
-                <img src={g.img} alt={g.name} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-brand-dark/0 group-hover:bg-brand-dark/40 transition-colors flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
-                  <button onClick={() => setModal({ type: 'edit', data: g })} className="bg-white p-2.5 rounded-lg hover:scale-105 transition-transform"><Edit size={16} /></button>
-                  <button onClick={() => handleDelete(g.id)} className="bg-red-500 text-white p-2.5 rounded-lg hover:scale-105 transition-transform"><Trash2 size={16} /></button>
-                </div>
-                <div className="absolute bottom-2 right-2 flex gap-1 bg-black/60 backdrop-blur-sm rounded-lg p-1">
-                  <button 
-                    disabled={idx === 0}
-                    onClick={() => handleReorder(g, 'up')}
-                    className="text-white disabled:opacity-30 hover:bg-white/10 p-1 rounded text-xs"
-                    title="Move Up"
-                  >
-                    ▲
-                  </button>
-                  <button 
-                    disabled={idx === girls.length - 1}
-                    onClick={() => handleReorder(g, 'down')}
-                    className="text-white disabled:opacity-30 hover:bg-white/10 p-1 rounded text-xs"
-                    title="Move Down"
-                  >
-                    ▼
-                  </button>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="text-xl font-serif font-bold text-brand-dark">{g.name}</h3>
-                  <span className="text-sm font-bold text-brand-primary">{g.age} yrs</span>
-                </div>
-                <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">{g.description}</p>
-              </div>
-            </div>
-            <div className="px-6 pb-6 pt-2 border-t border-brand-bg text-right text-xs text-brand-muted">
-              Order index: {g.sortOrder}
-            </div>
-          </div>
-        ))}
-        {girls.length === 0 && <div className="col-span-full text-center py-12 text-brand-muted">No profiles added yet.</div>}
-      </div>
+//       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//         {girls.map((g, idx) => (
+//           <div key={g.id} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-brand-accent/15 flex flex-col justify-between group">
+//             <div>
+//               <div className="aspect-square relative w-full bg-brand-bg">
+//                 <img src={g.img} alt={g.name} className="w-full h-full object-cover" />
+//                 <div className="absolute inset-0 bg-brand-dark/0 group-hover:bg-brand-dark/40 transition-colors flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
+//                   <button onClick={() => setModal({ type: 'edit', data: g })} className="bg-white p-2.5 rounded-lg hover:scale-105 transition-transform"><Edit size={16} /></button>
+//                   <button onClick={() => handleDelete(g.id)} className="bg-red-500 text-white p-2.5 rounded-lg hover:scale-105 transition-transform"><Trash2 size={16} /></button>
+//                 </div>
+//                 <div className="absolute bottom-2 right-2 flex gap-1 bg-black/60 backdrop-blur-sm rounded-lg p-1">
+//                   <button 
+//                     disabled={idx === 0}
+//                     onClick={() => handleReorder(g, 'up')}
+//                     className="text-white disabled:opacity-30 hover:bg-white/10 p-1 rounded text-xs"
+//                     title="Move Up"
+//                   >
+//                     ▲
+//                   </button>
+//                   <button 
+//                     disabled={idx === girls.length - 1}
+//                     onClick={() => handleReorder(g, 'down')}
+//                     className="text-white disabled:opacity-30 hover:bg-white/10 p-1 rounded text-xs"
+//                     title="Move Down"
+//                   >
+//                     ▼
+//                   </button>
+//                 </div>
+//               </div>
+//               <div className="p-6">
+//                 <div className="flex justify-between items-baseline mb-2">
+//                   <h3 className="text-xl font-serif font-bold text-brand-dark">{g.name}</h3>
+//                   <span className="text-sm font-bold text-brand-primary">{g.age} yrs</span>
+//                 </div>
+//                 <p className="text-sm text-brand-muted leading-relaxed line-clamp-3">{g.description}</p>
+//               </div>
+//             </div>
+//             <div className="px-6 pb-6 pt-2 border-t border-brand-bg text-right text-xs text-brand-muted">
+//               Order index: {g.sortOrder}
+//             </div>
+//           </div>
+//         ))}
+//         {girls.length === 0 && <div className="col-span-full text-center py-12 text-brand-muted">No profiles added yet.</div>}
+//       </div>
 
-      {/* Modal */}
-      {modal && (
-        <div className="fixed inset-0 bg-brand-dark/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-brand-dark">{modal.type === 'add' ? 'Add Profile' : 'Edit Profile'}</h3>
-              <button onClick={() => setModal(null)} className="text-brand-muted hover:text-brand-dark"><X size={20} /></button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-brand-dark mb-1">Name</label>
-                <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="Girl's name" />
-              </div>
+//       {/* Modal */}
+//       {modal && (
+//         <div className="fixed inset-0 bg-brand-dark/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+//           <div className="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+//             <div className="flex justify-between items-center mb-6">
+//               <h3 className="text-xl font-bold text-brand-dark">{modal.type === 'add' ? 'Add Profile' : 'Edit Profile'}</h3>
+//               <button onClick={() => setModal(null)} className="text-brand-muted hover:text-brand-dark"><X size={20} /></button>
+//             </div>
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="block text-sm font-medium text-brand-dark mb-1">Name</label>
+//                 <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="Girl's name" />
+//               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-brand-dark mb-1">Age</label>
-                <input type="number" value={form.age} onChange={e => setForm({ ...form, age: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="Age" min={1} max={120} />
-              </div>
+//               <div>
+//                 <label className="block text-sm font-medium text-brand-dark mb-1">Age</label>
+//                 <input type="number" value={form.age} onChange={e => setForm({ ...form, age: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="Age" min={1} max={120} />
+//               </div>
 
-              {/* Upload Mode Toggle */}
-              <div>
-                <label className="block text-sm font-medium text-brand-dark mb-2">Photo Source</label>
-                <div className="flex gap-2 mb-3">
-                  <button onClick={() => setUploadMode('file')}
-                    className={cn("flex-1 py-2 rounded-lg text-sm font-medium transition-all",
-                      uploadMode === 'file' ? "bg-brand-primary text-white" : "bg-gray-100 text-brand-muted hover:bg-gray-200"
-                    )}>
-                    📁 Upload File
-                  </button>
-                  <button onClick={() => setUploadMode('url')}
-                    className={cn("flex-1 py-2 rounded-lg text-sm font-medium transition-all",
-                      uploadMode === 'url' ? "bg-brand-primary text-white" : "bg-gray-100 text-brand-muted hover:bg-gray-200"
-                    )}>
-                    🔗 Paste URL
-                  </button>
-                </div>
+//               {/* Upload Mode Toggle */}
+//               <div>
+//                 <label className="block text-sm font-medium text-brand-dark mb-2">Photo Source</label>
+//                 <div className="flex gap-2 mb-3">
+//                   <button onClick={() => setUploadMode('file')}
+//                     className={cn("flex-1 py-2 rounded-lg text-sm font-medium transition-all",
+//                       uploadMode === 'file' ? "bg-brand-primary text-white" : "bg-gray-100 text-brand-muted hover:bg-gray-200"
+//                     )}>
+//                     📁 Upload File
+//                   </button>
+//                   <button onClick={() => setUploadMode('url')}
+//                     className={cn("flex-1 py-2 rounded-lg text-sm font-medium transition-all",
+//                       uploadMode === 'url' ? "bg-brand-primary text-white" : "bg-gray-100 text-brand-muted hover:bg-gray-200"
+//                     )}>
+//                     🔗 Paste URL
+//                   </button>
+//                 </div>
 
-                {uploadMode === 'file' ? (
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-brand-primary transition-colors">
-                    <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" id="girl-upload" />
-                    <label htmlFor="girl-upload" className="cursor-pointer">
-                      {uploading ? (
-                        <p className="text-brand-primary font-medium">Uploading...</p>
-                      ) : form.img && uploadMode === 'file' ? (
-                        <p className="text-green-600 font-medium">✅ Photo uploaded! Click to change</p>
-                      ) : (
-                        <>
-                          <p className="text-brand-muted mb-1">Click to choose a photo</p>
-                          <p className="text-xs text-brand-muted">JPEG, PNG, WebP — Max 10MB</p>
-                        </>
-                      )}
-                    </label>
-                  </div>
-                ) : (
-                  <input value={form.img} onChange={e => setForm({ ...form, img: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="/profile/Nisha.png or https://example.com/photo.jpg" />
-                )}
-              </div>
+//                 {uploadMode === 'file' ? (
+//                   <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-brand-primary transition-colors">
+//                     <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" id="girl-upload" />
+//                     <label htmlFor="girl-upload" className="cursor-pointer">
+//                       {uploading ? (
+//                         <p className="text-brand-primary font-medium">Uploading...</p>
+//                       ) : form.img && uploadMode === 'file' ? (
+//                         <p className="text-green-600 font-medium">✅ Photo uploaded! Click to change</p>
+//                       ) : (
+//                         <>
+//                           <p className="text-brand-muted mb-1">Click to choose a photo</p>
+//                           <p className="text-xs text-brand-muted">JPEG, PNG, WebP — Max 10MB</p>
+//                         </>
+//                       )}
+//                     </label>
+//                   </div>
+//                 ) : (
+//                   <input value={form.img} onChange={e => setForm({ ...form, img: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary" placeholder="/profile/Nisha.png or https://example.com/photo.jpg" />
+//                 )}
+//               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-brand-dark mb-1">Description / Story</label>
-                <textarea rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary resize-none" placeholder="A 2-3 sentence description..." />
-              </div>
+//               <div>
+//                 <label className="block text-sm font-medium text-brand-dark mb-1">Description / Story</label>
+//                 <textarea rows={4} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary resize-none" placeholder="A 2-3 sentence description..." />
+//               </div>
 
-              {form.img && <img src={form.img} alt="Preview" className="w-full h-40 object-cover rounded-xl" />}
-              <button onClick={handleSave} disabled={!form.name || !form.img || !form.description}
-                className="w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-brand-primary/90 shadow-btn disabled:opacity-50 disabled:cursor-not-allowed">
-                {modal.type === 'add' ? 'Add Profile' : 'Save Changes'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
+//               {form.img && <img src={form.img} alt="Preview" className="w-full h-40 object-cover rounded-xl" />}
+//               <button onClick={handleSave} disabled={!form.name || !form.img || !form.description}
+//                 className="w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-brand-primary/90 shadow-btn disabled:opacity-50 disabled:cursor-not-allowed">
+//                 {modal.type === 'add' ? 'Add Profile' : 'Save Changes'}
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </>
+//   );
+// }
 
