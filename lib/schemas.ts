@@ -34,9 +34,23 @@ export const donationSchema = z.object({
 
 // ─── Newsletter ─────────────────────────────────────────────────
 export const newsletterSchema = z.object({
-  email: z.string().trim().toLowerCase().email('Invalid email address').max(254),
-  name: z.string().trim().max(100).optional().or(z.literal('')),
+  name: z
+    .string({ message: 'Name is required' })
+    .trim()
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name must be less than 100 characters'),
+  email: z
+    .string({ message: 'Email address is required' })
+    .trim()
+    .toLowerCase()
+    .email('Please enter a valid email address')
+    .max(254, 'Email address is too long'),
+  phone: z.string().trim().max(20).optional().or(z.literal('')),
+  website: z.string().optional().or(z.literal('')),
 });
+
+
+
 
 // ─── Gallery ────────────────────────────────────────────────────
 export const galleryCreateSchema = z.object({

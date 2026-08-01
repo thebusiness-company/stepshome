@@ -72,17 +72,31 @@ enum DonationStatus {
 
 // ─── Newsletter Subscribers ─────────────────────────────────────
 
-model Newsletter {
-  id           String   @id @default(cuid())
-  email        String   @unique @db.VarChar(254)
-  name         String?  @db.VarChar(100)
-  isActive     Boolean  @default(true) @map("is_active")
-  subscribedAt DateTime @default(now()) @map("subscribed_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+enum NewsletterSubscriberStatus {
+  PENDING
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
 
+model Newsletter {
+  id              String                     @id @default(cuid())
+  email           String                     @unique @db.VarChar(254)
+  name            String?                    @db.VarChar(100)
+  phone           String?                    @db.VarChar(20)
+  status          NewsletterSubscriberStatus @default(SUBSCRIBED)
+  brevoContactId  String?                    @map("brevo_contact_id")
+  isActive        Boolean                    @default(true) @map("is_active")
+  subscribedAt    DateTime                   @default(now()) @map("subscribed_at")
+  confirmedAt     DateTime?                  @map("confirmed_at")
+  unsubscribedAt  DateTime?                  @map("unsubscribed_at")
+  updatedAt       DateTime                   @updatedAt @map("updated_at")
+
+  @@index([status])
   @@index([isActive])
+  @@index([subscribedAt])
   @@map("newsletters")
 }
+
 
 // ─── Gallery Images ─────────────────────────────────────────────
 

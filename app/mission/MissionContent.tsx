@@ -24,12 +24,35 @@ const CATEGORIES: { key: Category; label: string; icon: React.ComponentType<{ si
 ];
 
 const fallbackImages: GalleryImage[] = [
-  { id: '1', url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=800&auto=format&fit=crop', alt: 'Happy moments at STEPS Home', title: 'Happy Moments', category: 'MEMORIES', isActive: true },
-  { id: '2', url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop', alt: 'Learning together at STEPS', title: 'Learning Together', category: 'DAILY_LIFE', isActive: true },
-  { id: '3', url: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=800&auto=format&fit=crop', alt: 'Growing up strong at STEPS', title: 'Growing Strong', category: 'MEMORIES', isActive: true },
-  { id: '4', url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=800&auto=format&fit=crop', alt: 'Celebrations at STEPS', title: 'Celebrations', category: 'EVENTS', isActive: true },
-  { id: '5', url: 'https://images.unsplash.com/photo-1517673132405-a56a62b18caf?q=80&w=800&auto=format&fit=crop', alt: 'Singing at STEPS', title: 'Music & Song', category: 'EVENTS', isActive: true },
-  { id: '6', url: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=800&auto=format&fit=crop', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '1', url: 'memories/12.webp', alt: 'Happy moments at STEPS Home', title: 'Happy Moments', category: 'MEMORIES', isActive: true },
+  // { id: '2', url: 'memories/5.webp', alt: 'Learning together at STEPS', title: 'Learning Together', category: 'DAILY_LIFE', isActive: true },
+  { id: '3', url: 'memories/6.webp', alt: 'Growing up strong at STEPS', title: 'Growing Strong', category: 'MEMORIES', isActive: true },
+  { id: '4', url: 'memories/7.webp', alt: 'Celebrations at STEPS', title: 'Celebrations', category: 'EVENTS', isActive: true },
+  // { id: '5', url: 'memories/8.webp', alt: 'Singing at STEPS', title: 'Music & Song', category: 'EVENTS', isActive: true },
+  { id: '6', url: 'memories/9.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '7', url: 'memories/10.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '8', url: 'memories/11.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '9', url: 'memories/4.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '10', url: 'memories/13.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '11', url: 'memories/14.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '12', url: 'memories/15.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '13', url: 'memories/16.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '14', url: 'memories/22.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '15', url: 'memories/18.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '16', url: 'memories/19.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '17', url: 'memories/20.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '18', url: 'memories/21.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '19', url: 'memories/17.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '20', url: 'memories/23.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '21', url: 'memories/24.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '22', url: 'memories/25.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '23', url: 'memories/26.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '24', url: 'memories/27.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '25', url: 'memories/28.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '26', url: 'memories/29.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  { id: '27', url: 'memories/8.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  // { id: '28', url: 'memories/31.webp', alt: 'Sisters at STEPS', title: 'Sisters Forever', category: 'DAILY_LIFE', isActive: true },
+  
 ];
 
 export default function MissionContent() {
@@ -134,6 +157,7 @@ export default function MissionContent() {
       <section className="py-20 bg-transparent">
         <div className="max-w-4xl mx-auto px-4">
           <div className="space-y-12">
+            <h4 className="text-3xl font-serif font-bold text-brand-primary mb-12 relative z-10 text-center w-full">Our Journey: Three Chapters</h4>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

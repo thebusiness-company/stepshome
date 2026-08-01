@@ -7,6 +7,7 @@ import InstagramSection from '@/components/home/InstagramSection';
 import Supporters from '@/components/home/Supporters';
 import Timeline from '@/components/home/Timeline';
 import StoriesCarousel from '@/components/home/StoriesCarousel';
+import NewsletterForm from '@/components/newsletter/NewsletterForm';
 import DonationBanner from '@/components/home/DonationBanner';
 
 export const metadata: Metadata = {
@@ -60,8 +61,10 @@ export default function HomePage() {
         <Supporters />
         <Timeline />
         <StoriesCarousel />
+        <NewsletterForm />
         <DonationBanner />
       </div>
     </>
   );
 }
+

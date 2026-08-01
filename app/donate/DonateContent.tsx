@@ -679,15 +679,15 @@ export default function DonateContent() {
               Choose Where Your Gift Goes
             </motion.h2>
             <div className="w-12 h-1 bg-brand-primary mx-auto rounded-full mb-4"></div>
-            <motion.p
+            {/* <motion.p
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               className="text-brand-muted max-w-xl mx-auto text-base"
             >
-              Directly sponsor one of our core initiatives or post-18 transition campaigns.
-            </motion.p>
+              Directly sponsor one of our core ini  tiatives or post-18 transition campaigns.
+            </motion.p> */}
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

@@ -32,7 +32,7 @@ export default function StoriesCarousel() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-serif font-bold text-brand-dark mb-4">Stories of Transformation</h2>
           <p className="text-lg text-brand-muted max-w-2xl mx-auto">
-            Meet the brave girls who are rewriting their destinies with your support.
+            Every girl at Steps Home has a story that needs to be heard.
           </p>
         </div>
 

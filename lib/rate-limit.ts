@@ -73,6 +73,13 @@ export function checkUploadLimit(ip: string): RateLimitResult {
   return checkRateLimit(ip, { maxTokens: 10, windowMs: 60 * 60 * 1000, prefix: 'upload' });
 }
 
+/** Newsletter subscription: 10 requests per 15 minutes per IP + email */
+export function checkNewsletterLimit(ip: string, email: string): RateLimitResult {
+  const identifier = `${ip}:${email.toLowerCase()}`;
+  return checkRateLimit(identifier, { maxTokens: 10, windowMs: 15 * 60 * 1000, prefix: 'newsletter' });
+}
+
+
 /** Get IP from request headers */
 export function getClientIP(request: Request): string {
   return (

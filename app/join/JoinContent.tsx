@@ -86,6 +86,7 @@ export default function JoinContent() {
       </section>
 
       <section className="py-20 bg-transparent">
+        <h4 className="text-3xl font-serif font-bold text-brand-primary mb-12 relative z-10 text-center w-full"> Ways to Get Involved</h4>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-20">
             {[
@@ -150,7 +151,7 @@ export default function JoinContent() {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-brand-text mb-2">First Name</label>
+                      <label htmlFor="firstName" className="block text-sm font-medium text-brand-text mb-2">First Name <span className="text-red-500">*</span></label>
                       <input
                         id="firstName"
                         type="text"
@@ -162,7 +163,7 @@ export default function JoinContent() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-brand-text mb-2">Last Name</label>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-brand-text mb-2">Last Name <span className="text-red-500">*</span></label>
                       <input
                         id="lastName"
                         type="text"
@@ -176,7 +177,7 @@ export default function JoinContent() {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-brand-text mb-2">Email Address</label>
+                    <label htmlFor="email" className="block text-sm font-medium text-brand-text mb-2">Email Address<span className="text-red-500">*</span></label>
                     <input
                       id="email"
                       type="email"
@@ -189,7 +190,7 @@ export default function JoinContent() {
                   </div>
 
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-brand-text mb-2">Phone Number</label>
+                    <label htmlFor="phone" className="block text-sm font-medium text-brand-text mb-2">Phone Number<span className="text-red-500">*</span></label>
                     <input
                       id="phone"
                       type="tel"
@@ -201,7 +202,7 @@ export default function JoinContent() {
                   </div>
 
                   <div>
-                    <label htmlFor="helpType" className="block text-sm font-medium text-brand-text mb-2">How would you like to help?</label>
+                    <label htmlFor="helpType" className="block text-sm font-medium text-brand-text mb-2">How would you like to help?<span className="text-red-500">*</span></label>
                     <select
                       id="helpType"
                       value={formData.helpType}
@@ -237,7 +238,7 @@ export default function JoinContent() {
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="w-full bg-gradient-to-br from-brand-primary to-brand-dark text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity shadow-btn flex items-center justify-center gap-2 disabled:opacity-60"
+                    className="w-full bg-linear-to-br from-brand-primary to-brand-dark text-white py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity shadow-btn flex items-center justify-center gap-2 disabled:opacity-60"
                   >
                     {status === 'loading' ? (
                       <>

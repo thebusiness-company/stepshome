@@ -13,8 +13,8 @@ export default function Supporters() {
   return (
     <section className="py-20 bg-brand-bg border-y border-brand-primary/10 overflow-hidden" aria-label="Our supporters">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
-        <h2 className="text-3xl font-serif font-bold text-brand-dark">The Force Behind Us</h2>
-        <p className="text-brand-muted mt-2">Grateful for our partners and sponsors</p>
+        <h2 className="text-3xl font-serif font-bold text-brand-dark">The People Behind Us</h2>
+        {/* <p className="text-brand-muted mt-2">Grateful for our partners and sponsors</p> */}
       </div>
 
       <div className="flex gap-8 px-4 animate-[scroll_30s_linear_infinite] w-max">
