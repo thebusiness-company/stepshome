@@ -28,8 +28,10 @@ export function isR2Configured(): boolean {
 
 function getR2Client(): S3Client {
   const accountId = process.env.R2_ACCOUNT_ID;
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+  const accessKeyId =
+    process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey =
+    process.env.R2_SECRET_ACCESS_KEY;
 
   if (
     !accountId ||
@@ -106,6 +108,7 @@ export async function uploadToR2({
       url,
       key,
     };
+
   } catch (error) {
     const message =
       error instanceof Error

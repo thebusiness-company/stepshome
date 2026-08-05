@@ -70,7 +70,7 @@ export function checkFormLimit(ip: string): RateLimitResult {
 
 /** Upload: 10 per hour */
 export function checkUploadLimit(ip: string): RateLimitResult {
-  return checkRateLimit(ip, { maxTokens: 10, windowMs: 60 * 60 * 1000, prefix: 'upload' });
+  return checkRateLimit(ip, { maxTokens: 50, windowMs: 60 * 60 * 1000, prefix: 'upload' });
 }
 
 /** Newsletter subscription: 10 requests per 15 minutes per IP + email */
