@@ -20,7 +20,7 @@ const PUBLIC_POST_ROUTES = [
   '/api/payment/verify',
   '/api/payment/webhook',
 ];
-const PUBLIC_GET_ROUTES = ['/api/gallery'];
+const PUBLIC_GET_ROUTES = ['/api/gallery', '/api/girls'];
 
 function isPublicRequest(method: string, pathname: string): boolean {
   if (method === 'POST' && PUBLIC_POST_ROUTES.includes(pathname)) return true;
