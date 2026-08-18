@@ -8,7 +8,7 @@ export default function DonationBanner() {
   return (
     <section
   className="relative h-150 overflow-hidden flex items-end "
-  aria-label="Call to action - Sponsor a child"
+  aria-label="Call to action - Support Us"
 >
   <div className="absolute inset-0 z-0">
     <Image
@@ -39,7 +39,7 @@ export default function DonationBanner() {
         href="/donate"
         className="inline-block bg-white text-brand-primary px-10 py-4 rounded-xl font-bold text-lg hover:bg-brand-bg transition-all hover:scale-105 shadow-glass"
       >
-        Sponsor a Child Today
+        Support Us
       </Link>
     </motion.div>
   </div>

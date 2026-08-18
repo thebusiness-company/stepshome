@@ -164,7 +164,7 @@ export default function GirlsContent() {
             transition={{ delay: 0.1 }}
             className="text-base sm:text-lg text-brand-muted mb-8 max-w-xl mx-auto"
           >
-            Sponsor a girl&apos;s education, meals, or her future — and change everything.
+            Support a girl&apos;s education, meals, or her future — and change everything.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -176,7 +176,7 @@ export default function GirlsContent() {
               href="/donate"
               className="inline-flex items-center gap-2 bg-brand-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-brand-dark transition-all hover:scale-105 shadow-btn text-base"
             >
-              Donate Now <ArrowRight size={18} />
+              Support Us <ArrowRight size={18} />
             </Link>
           </motion.div>
         </div>

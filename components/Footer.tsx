@@ -52,7 +52,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/donate" className="text-[#e5e5e5] hover:text-white transition-colors">
-                  Donate Now
+                  Support Us
                 </Link>
               </li>
             </ul>

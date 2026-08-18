@@ -17,6 +17,7 @@ export default function Navbar() {
     { name: 'ABOUT US', path: '/mission' },
     // { name: 'Our Girls', path: '/girls' },
     { name: 'Join Us', path: '/join' },
+    { name: 'Support Us', path: '/donate' },
   ];
 
   return (
@@ -49,12 +50,6 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/donate"
-              className="bg-linear-to-br from-[#1f2a44] to-[#4fa6a0] text-white px-6 py-2.5 rounded-full font-bold hover:opacity-90 transition-opacity shadow-btn"
-            >
-              Donate Now
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -94,13 +89,6 @@ export default function Navbar() {
                   {link.name}
                 </Link>
               ))}
-              <Link
-                href="/donate"
-                onClick={() => setIsOpen(false)}
-                className="block w-full text-center mt-4 bg-gradient-to-br from-[#1f2a44] to-[#4fa6a0] text-white px-6 py-3 rounded-full font-bold hover:opacity-90 transition-opacity shadow-btn"
-              >
-                Donate Now
-              </Link>
             </div>
           </motion.div>
         )}

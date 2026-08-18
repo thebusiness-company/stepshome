@@ -64,7 +64,7 @@ export default function Hero() {
               href="/donate"
               className="w-full sm:w-auto text-center bg-brand-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-brand-dark transition-all hover:scale-105 shadow-btn whitespace-nowrap"
             >
-              Donate Now
+              Support Us
             </Link>
 
             <Link
