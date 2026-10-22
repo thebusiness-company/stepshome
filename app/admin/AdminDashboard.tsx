@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Image as ImageIcon, Users, Heart, Mail, RefreshCw, Plus, Trash2, Edit, X, Eye, EyeOff, Lock, LogOut, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, Users, Heart, Mail, RefreshCw, Plus, Trash2, Edit, X, Eye, EyeOff, Lock, LogOut, Sparkles, Phone, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type Tab = 'overview' | 'girls' | 'gallery' | 'contacts' | 'donations' | 'newsletter';
@@ -10,7 +10,7 @@ interface Stats { totalContacts: number; totalDonations: number; totalSubscriber
 interface Girl { id: string; name: string; age: number; description: string; img: string; sortOrder: number; createdAt: string; }
 interface GalleryImage { id: string; title: string; alt: string; url: string; category: string; sortOrder: number; isActive: boolean; createdAt: string; }
 interface Contact { id: string; firstName: string; lastName: string; email: string; phone: string | null; helpType: string; message: string | null; status: string; createdAt: string; }
-interface Donation { id: string; amount: number; currency: string; frequency: string; designation: string; reference: string; status: string; createdAt: string; }
+interface Donation { id: string; amount: number; currency: string; frequency: string; designation: string; reference: string; status: string; donorName?: string | null; donorEmail?: string | null; donorPhone?: string | null; paymentId?: string | null; razorpayOrderId?: string | null; createdAt: string; }
 interface Subscriber { id: string; email: string; name: string | null; isActive: boolean; subscribedAt: string; }
 
 export default function AdminDashboard() {
@@ -415,8 +415,28 @@ function ContactsTab({ contacts, onRefresh }: { contacts: Contact[]; onRefresh: 
 
 // ─── Donations ──────────────────────────────────────────────────
 function DonationsTab({ donations }: { donations: Donation[] }) {
+  const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+
   const completedDonations = donations.filter(d => d.status === 'COMPLETED');
   const total = completedDonations.reduce((s, d) => s + Number(d.amount), 0);
+
+  const filteredDonations = donations.filter(d => {
+    const matchesStatus = statusFilter === 'ALL' || d.status === statusFilter;
+    const query = searchTerm.toLowerCase().trim();
+    if (!query) return matchesStatus;
+
+    const matchesSearch =
+      (d.donorName && d.donorName.toLowerCase().includes(query)) ||
+      (d.donorEmail && d.donorEmail.toLowerCase().includes(query)) ||
+      (d.donorPhone && d.donorPhone.toLowerCase().includes(query)) ||
+      (d.reference && d.reference.toLowerCase().includes(query)) ||
+      (d.paymentId && d.paymentId.toLowerCase().includes(query)) ||
+      (d.designation && d.designation.toLowerCase().includes(query));
+
+    return matchesStatus && matchesSearch;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -435,42 +455,243 @@ function DonationsTab({ donations }: { donations: Donation[] }) {
 
   return (
     <>
-      <div className="bg-brand-primary text-white p-6 rounded-2xl mb-6 flex justify-between items-center">
+      {/* Summary Header */}
+      <div className="bg-brand-primary text-white p-6 rounded-2xl mb-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
           <p className="text-white/80 text-sm">Total Revenue (Completed)</p>
           <p className="text-3xl font-bold">₹{total.toLocaleString()}</p>
         </div>
-        <p className="text-white/80">{completedDonations.length} completed / {donations.length} total</p>
+        <div className="flex gap-4 text-sm text-white/90">
+          <div>
+            <span className="block font-bold text-lg text-white">{completedDonations.length}</span>
+            <span className="text-white/70 text-xs">Completed</span>
+          </div>
+          <div className="border-l border-white/20 pl-4">
+            <span className="block font-bold text-lg text-white">{donations.filter(d => d.status === 'PENDING').length}</span>
+            <span className="text-white/70 text-xs">Pending</span>
+          </div>
+          <div className="border-l border-white/20 pl-4">
+            <span className="block font-bold text-lg text-white">{donations.length}</span>
+            <span className="text-white/70 text-xs">Total Records</span>
+          </div>
+        </div>
       </div>
+
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-muted" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search by donor name, email, phone, reference..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary text-sm bg-white"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={e => setStatusFilter(e.target.value)}
+          className="px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-primary text-sm bg-white font-medium text-brand-dark"
+        >
+          <option value="ALL">All Statuses ({donations.length})</option>
+          <option value="COMPLETED">Completed ({completedDonations.length})</option>
+          <option value="PENDING">Pending ({donations.filter(d => d.status === 'PENDING').length})</option>
+          <option value="FAILED">Failed ({donations.filter(d => d.status === 'FAILED').length})</option>
+        </select>
+      </div>
+
+      {/* Donations Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-brand-accent/10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-brand-bg text-brand-dark">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Reference</th>
+                <th className="text-left px-4 py-3 font-medium">Donor Details</th>
                 <th className="text-left px-4 py-3 font-medium">Amount</th>
                 <th className="text-left px-4 py-3 font-medium">Frequency</th>
                 <th className="text-left px-4 py-3 font-medium">Designation</th>
                 <th className="text-left px-4 py-3 font-medium">Status</th>
+                <th className="text-left px-4 py-3 font-medium">Reference</th>
                 <th className="text-left px-4 py-3 font-medium">Date</th>
+                <th className="text-center px-4 py-3 font-medium">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-accent/10">
-              {donations.map(d => (
-                <tr key={d.id} className="hover:bg-brand-bg/50">
-                  <td className="px-4 py-3 font-mono text-xs text-brand-dark">{d.reference}</td>
+              {filteredDonations.map(d => (
+                <tr key={d.id} className="hover:bg-brand-bg/50 transition-colors">
+                  <td className="px-4 py-3">
+                    <div>
+                      <p className="font-semibold text-brand-dark">
+                        {d.donorName || <span className="text-brand-muted italic font-normal">Anonymous</span>}
+                      </p>
+                      {d.donorEmail && (
+                        <a
+                          href={`mailto:${d.donorEmail}`}
+                          className="inline-flex items-center gap-1 text-xs text-brand-muted hover:text-brand-primary transition-colors mt-0.5"
+                        >
+                          <Mail size={12} /> {d.donorEmail}
+                        </a>
+                      )}
+                      {d.donorPhone && (
+                        <div className="block mt-0.5">
+                          <a
+                            href={`tel:${d.donorPhone}`}
+                            className="inline-flex items-center gap-1 text-xs text-brand-muted hover:text-brand-primary transition-colors"
+                          >
+                            <Phone size={12} /> {d.donorPhone}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 font-bold text-brand-dark">₹{d.amount.toLocaleString()}</td>
-                  <td className="px-4 py-3"><span className={cn("px-2 py-1 rounded-full text-xs font-bold", d.frequency === 'MONTHLY' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')}>{d.frequency.replace('_', '-')}</span></td>
+                  <td className="px-4 py-3">
+                    <span className={cn("px-2 py-1 rounded-full text-xs font-bold", d.frequency === 'MONTHLY' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')}>
+                      {d.frequency.replace('_', '-')}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-brand-muted capitalize">{d.designation}</td>
-                  <td className="px-4 py-3"><span className={cn("px-2 py-1 rounded-full text-xs font-bold", getStatusBadge(d.status))}>{d.status}</span></td>
-                  <td className="px-4 py-3 text-brand-muted">{new Date(d.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">
+                    <span className={cn("px-2 py-1 rounded-full text-xs font-bold", getStatusBadge(d.status))}>
+                      {d.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="font-mono text-xs text-brand-dark block">{d.reference}</span>
+                    {d.paymentId && <span className="font-mono text-[10px] text-brand-muted block truncate max-w-[120px]" title={d.paymentId}>ID: {d.paymentId}</span>}
+                  </td>
+                  <td className="px-4 py-3 text-brand-muted whitespace-nowrap">{new Date(d.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={() => setSelectedDonation(d)}
+                      className="inline-flex items-center gap-1 bg-brand-bg hover:bg-brand-primary hover:text-white text-brand-dark px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                      title="View Full Details"
+                    >
+                      <Eye size={14} /> View
+                    </button>
+                  </td>
                 </tr>
               ))}
-              {donations.length === 0 && <tr><td colSpan={6} className="text-center py-8 text-brand-muted">No donations yet.</td></tr>}
+              {filteredDonations.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-brand-muted">
+                    {searchTerm || statusFilter !== 'ALL' ? 'No matching donations found.' : 'No donations yet.'}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Donor & Donation Detail Modal */}
+      {selectedDonation && (
+        <div className="fixed inset-0 bg-brand-dark/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6 border-b border-brand-accent/15 pb-4">
+              <div>
+                <span className="text-xs uppercase tracking-wider text-brand-muted font-bold">Donation Details</span>
+                <h3 className="text-xl font-bold text-brand-dark font-mono">{selectedDonation.reference}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedDonation(null)}
+                className="text-brand-muted hover:text-brand-dark p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Amount & Status Card */}
+            <div className="bg-brand-bg rounded-2xl p-5 mb-6 flex justify-between items-center">
+              <div>
+                <p className="text-xs text-brand-muted font-semibold uppercase">Donation Amount</p>
+                <p className="text-3xl font-serif font-bold text-brand-primary">₹{selectedDonation.amount.toLocaleString()}</p>
+                <p className="text-xs text-brand-muted mt-1">{selectedDonation.frequency === 'MONTHLY' ? 'Monthly recurring' : 'One-time donation'}</p>
+              </div>
+              <div>
+                <span className={cn("px-3 py-1.5 rounded-full text-xs font-bold block text-center", getStatusBadge(selectedDonation.status))}>
+                  {selectedDonation.status}
+                </span>
+                <p className="text-xs text-brand-muted mt-2 text-right">{new Date(selectedDonation.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+
+            {/* Donor Information */}
+            <div className="mb-6">
+              <h4 className="text-sm font-bold text-brand-dark uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Users size={16} className="text-brand-primary" /> Donor Information
+              </h4>
+              <div className="bg-gray-50 rounded-2xl p-4 space-y-3 text-sm border border-gray-100">
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Donor Name</span>
+                  <span className="font-semibold text-brand-dark">{selectedDonation.donorName || 'Not provided / Anonymous'}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Email</span>
+                  {selectedDonation.donorEmail ? (
+                    <a href={`mailto:${selectedDonation.donorEmail}`} className="font-semibold text-brand-primary hover:underline flex items-center gap-1">
+                      <Mail size={14} /> {selectedDonation.donorEmail}
+                    </a>
+                  ) : (
+                    <span className="text-brand-muted">Not provided</span>
+                  )}
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Phone Number</span>
+                  {selectedDonation.donorPhone ? (
+                    <a href={`tel:${selectedDonation.donorPhone}`} className="font-semibold text-brand-primary hover:underline flex items-center gap-1">
+                      <Phone size={14} /> {selectedDonation.donorPhone}
+                    </a>
+                  ) : (
+                    <span className="text-brand-muted">Not provided</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Payment & Transaction Details */}
+            <div className="mb-6">
+              <h4 className="text-sm font-bold text-brand-dark uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Heart size={16} className="text-brand-primary" /> Transaction Details
+              </h4>
+              <div className="bg-gray-50 rounded-2xl p-4 space-y-3 text-sm border border-gray-100">
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Designation</span>
+                  <span className="font-semibold text-brand-dark capitalize">{selectedDonation.designation}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Reference ID</span>
+                  <span className="font-mono text-xs font-semibold text-brand-dark">{selectedDonation.reference}</span>
+                </div>
+                {selectedDonation.paymentId && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-brand-muted">Razorpay Payment ID</span>
+                    <span className="font-mono text-xs font-semibold text-brand-dark">{selectedDonation.paymentId}</span>
+                  </div>
+                )}
+                {selectedDonation.razorpayOrderId && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-brand-muted">Razorpay Order ID</span>
+                    <span className="font-mono text-xs text-brand-muted">{selectedDonation.razorpayOrderId}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-brand-muted">Timestamp</span>
+                  <span className="text-xs text-brand-dark">{new Date(selectedDonation.createdAt).toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setSelectedDonation(null)}
+              className="w-full bg-brand-primary text-white py-3 rounded-xl font-bold hover:bg-brand-primary/90 transition-colors shadow-btn"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
