@@ -471,7 +471,7 @@ export default function DonateContent() {
                           onChange={(e) => setCustomAmount(e.target.value)}
                           className="w-full pl-10 pr-4 py-4 rounded-xl border border-gray-200 focus:border-brand-primary focus:ring-0 outline-none text-lg font-bold text-brand-text bg-white"
                           placeholder="Amount (₹10 - ₹10,00,000)"
-                          min={10}
+                          min={1}
                           max={1000000}
                         />
                       </div>

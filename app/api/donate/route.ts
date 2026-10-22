@@ -127,9 +127,12 @@ export async function GET() {
     });
 
     // ---------------------------------------------------------
-    // Calculate donation totals
+    // Calculate donation totals (completed payments only)
     // ---------------------------------------------------------
     const totals = await prisma.donation.aggregate({
+      where: {
+        status: 'COMPLETED',
+      },
       _sum: {
         amount: true,
       },

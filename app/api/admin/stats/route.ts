@@ -7,8 +7,11 @@ export async function GET() {
     const [totalContacts, totalDonations, donationSum, totalSubscribers, totalGalleryImages, totalGirls] =
       await Promise.all([
         prisma.contact.count(),
-        prisma.donation.count(),
-        prisma.donation.aggregate({ _sum: { amount: true } }),
+        prisma.donation.count({ where: { status: 'COMPLETED' } }),
+        prisma.donation.aggregate({
+          where: { status: 'COMPLETED' },
+          _sum: { amount: true },
+        }),
         prisma.newsletter.count({ where: { isActive: true } }),
         prisma.galleryImage.count(),
         prisma.girl.count(),

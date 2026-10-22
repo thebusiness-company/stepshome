@@ -415,15 +415,32 @@ function ContactsTab({ contacts, onRefresh }: { contacts: Contact[]; onRefresh: 
 
 // ─── Donations ──────────────────────────────────────────────────
 function DonationsTab({ donations }: { donations: Donation[] }) {
-  const total = donations.reduce((s, d) => s + Number(d.amount), 0);
+  const completedDonations = donations.filter(d => d.status === 'COMPLETED');
+  const total = completedDonations.reduce((s, d) => s + Number(d.amount), 0);
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'bg-green-100 text-green-700';
+      case 'PENDING':
+        return 'bg-amber-100 text-amber-700';
+      case 'FAILED':
+        return 'bg-red-100 text-red-700';
+      case 'REFUNDED':
+        return 'bg-purple-100 text-purple-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
     <>
       <div className="bg-brand-primary text-white p-6 rounded-2xl mb-6 flex justify-between items-center">
         <div>
-          <p className="text-white/80 text-sm">Total Raised</p>
+          <p className="text-white/80 text-sm">Total Revenue (Completed)</p>
           <p className="text-3xl font-bold">₹{total.toLocaleString()}</p>
         </div>
-        <p className="text-white/80">{donations.length} donations</p>
+        <p className="text-white/80">{completedDonations.length} completed / {donations.length} total</p>
       </div>
       <div className="bg-white rounded-2xl shadow-sm border border-brand-accent/10 overflow-hidden">
         <div className="overflow-x-auto">
@@ -445,7 +462,7 @@ function DonationsTab({ donations }: { donations: Donation[] }) {
                   <td className="px-4 py-3 font-bold text-brand-dark">₹{d.amount.toLocaleString()}</td>
                   <td className="px-4 py-3"><span className={cn("px-2 py-1 rounded-full text-xs font-bold", d.frequency === 'MONTHLY' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700')}>{d.frequency.replace('_', '-')}</span></td>
                   <td className="px-4 py-3 text-brand-muted capitalize">{d.designation}</td>
-                  <td className="px-4 py-3"><span className="px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">{d.status}</span></td>
+                  <td className="px-4 py-3"><span className={cn("px-2 py-1 rounded-full text-xs font-bold", getStatusBadge(d.status))}>{d.status}</span></td>
                   <td className="px-4 py-3 text-brand-muted">{new Date(d.createdAt).toLocaleDateString()}</td>
                 </tr>
               ))}
