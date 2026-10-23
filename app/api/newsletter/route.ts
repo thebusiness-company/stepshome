@@ -76,49 +76,14 @@ export async function POST(request: NextRequest) {
     console.log(`[Newsletter API] newsletter_subscription_attempt for IP=${ip}`);
 
     // -----------------------------------------------------------------
-    // 5. Brevo Contact Subscription Call
+    // 5. Check if already active in database
     // -----------------------------------------------------------------
-    const brevoResult = await addOrUpdateBrevoContact({ name, email, phone });
+    const existing = await prisma.newsletter.findUnique({
+      where: { email },
+    });
 
-    if (!brevoResult.success) {
-      console.error('[Newsletter API] newsletter_brevo_error:', brevoResult.error);
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Unable to subscribe right now. Please try again later.',
-        },
-        { status: 502 }
-      );
-    }
-
-    // Handle Duplicate Subscription
-    if (brevoResult.isDuplicate) {
-      console.log('[Newsletter API] newsletter_subscription_duplicate');
-      
-      // Update Prisma database to reflect duplicate subscriber status if record exists
-      try {
-        await prisma.newsletter.upsert({
-          where: { email },
-          update: {
-            name: name || undefined,
-            phone: phone || undefined,
-            isActive: true,
-            status: 'SUBSCRIBED',
-            brevoContactId: brevoResult.contactId || undefined,
-          },
-          create: {
-            email,
-            name: name || null,
-            phone: phone || null,
-            status: 'SUBSCRIBED',
-            brevoContactId: brevoResult.contactId || null,
-            isActive: true,
-          },
-        });
-      } catch (dbErr) {
-        console.error('[Newsletter API] newsletter_database_error on duplicate upsert:', dbErr);
-      }
-
+    if (existing && existing.isActive && existing.status === 'SUBSCRIBED') {
+      console.log(`[Newsletter API] newsletter_subscription_duplicate for ${email}`);
       return NextResponse.json({
         success: true,
         message: 'This email is already subscribed.',
@@ -126,10 +91,8 @@ export async function POST(request: NextRequest) {
     }
 
     // -----------------------------------------------------------------
-    // 6. Prisma Database Persistence (Local Audit/Reference Record)
+    // 6. Save/Update subscriber in Prisma database
     // -----------------------------------------------------------------
-    const subscriberStatus = brevoResult.isDoubleOptIn ? 'PENDING' : 'SUBSCRIBED';
-
     try {
       await prisma.newsletter.upsert({
         where: { email },
@@ -137,37 +100,62 @@ export async function POST(request: NextRequest) {
           name: name || undefined,
           phone: phone || undefined,
           isActive: true,
-          status: subscriberStatus,
-          brevoContactId: brevoResult.contactId || undefined,
-          confirmedAt: brevoResult.isDoubleOptIn ? undefined : new Date(),
+          status: 'SUBSCRIBED',
+          confirmedAt: new Date(),
         },
         create: {
           email,
           name: name || null,
           phone: phone || null,
-          status: subscriberStatus,
-          brevoContactId: brevoResult.contactId || null,
+          status: 'SUBSCRIBED',
           isActive: true,
-          confirmedAt: brevoResult.isDoubleOptIn ? undefined : new Date(),
+          confirmedAt: new Date(),
         },
       });
-      console.log('[Newsletter API] newsletter_subscription_success DB updated');
+      console.log(`[Newsletter API] Subscriber saved to database: ${email}`);
     } catch (dbErr) {
-      // Log DB failure without failing the overall user subscription since Brevo succeeded
-      console.error('[Newsletter API] newsletter_database_error:', dbErr);
+      console.error('[Newsletter API] Database persistence error:', dbErr);
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unable to subscribe right now. Please try again later.',
+        },
+        { status: 500 }
+      );
     }
 
     // -----------------------------------------------------------------
-    // 7. Safe JSON Success Response
+    // 7. Optional Brevo synchronization (non-blocking)
     // -----------------------------------------------------------------
-    const successMessage = brevoResult.isDoubleOptIn
-      ? "You're almost subscribed! Please check your email to confirm your subscription."
-      : "You're subscribed successfully.";
+    try {
+      const brevoResult = await addOrUpdateBrevoContact({
+        name: name || 'Subscriber',
+        email,
+        phone,
+      });
 
+      if (brevoResult.success && brevoResult.contactId) {
+        await prisma.newsletter.update({
+          where: { email },
+          data: {
+            brevoContactId: brevoResult.contactId,
+            ...(brevoResult.isDoubleOptIn ? { status: 'PENDING' } : {}),
+          },
+        });
+      } else if (!brevoResult.success) {
+        console.warn('[Newsletter API] Brevo sync failed (subscriber saved locally):', brevoResult.error);
+      }
+    } catch (brevoErr) {
+      console.warn('[Newsletter API] Brevo sync exception (subscriber saved locally):', brevoErr);
+    }
+
+    // -----------------------------------------------------------------
+    // 8. Safe JSON Success Response
+    // -----------------------------------------------------------------
     return NextResponse.json(
       {
         success: true,
-        message: successMessage,
+        message: "You're subscribed successfully.",
       },
       { status: 200 }
     );

@@ -35,10 +35,11 @@ export const donationSchema = z.object({
 // ─── Newsletter ─────────────────────────────────────────────────
 export const newsletterSchema = z.object({
   name: z
-    .string({ message: 'Name is required' })
+    .string()
     .trim()
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name must be less than 100 characters'),
+    .max(100, 'Name must be less than 100 characters')
+    .optional()
+    .or(z.literal('')),
   email: z
     .string({ message: 'Email address is required' })
     .trim()
